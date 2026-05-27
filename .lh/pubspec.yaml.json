@@ -1,0 +1,18 @@
+{
+    "sourceFile": "pubspec.yaml",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1779830020207,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1779830020207,
+            "name": "Commit-0",
+            "content": "name: gps_sms_gateway\ndescription: GPS Control EC - SMS Gateway\npublish_to: 'none'\nversion: 1.0.0+1\n\nenvironment:\n  sdk: \">=3.0.0 <4.0.0\"\n  flutter: \">=3.13.0\"\n\ndependencies:\n  flutter:\n    sdk: flutter\n  http: ^1.2.0\n  shared_preferences: ^2.2.3\n  flutter_background_service: ^5.0.5\n  flutter_local_notifications: ^17.0.0\n  permission_handler: ^11.3.1\n  wakelock_plus: ^1.2.5\n  flutter_phone_direct_caller: ^2.2.1\n\ndev_dependencies:\n  flutter_test:\n    sdk: flutter\n  flutter_lints: ^3.0.0\n\nflutter:\n  uses-material-design: true\n"
+        }
+    ]
+}

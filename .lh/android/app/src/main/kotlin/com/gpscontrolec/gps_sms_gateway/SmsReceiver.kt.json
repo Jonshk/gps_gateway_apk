@@ -1,0 +1,22 @@
+{
+    "sourceFile": "android/app/src/main/kotlin/com/gpscontrolec/gps_sms_gateway/SmsReceiver.kt",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 1,
+            "patches": [
+                {
+                    "date": 1779818970816,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                },
+                {
+                    "date": 1779819106410,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -37,10 +37,9 @@\n \r\n     private fun sendToBackend(from: String, body: String) {\r\n         try {\r\n             val apiBase = \"https://gps-backend-ec.onrender.com\"\r\n-            val apiKey = \"TU_API_KEY_AQUI\"\r\n-\r\n+            val apiKey = \"changeme123\"\r\n             val url = URL(\"$apiBase/gateway/incoming\")\r\n             val conn = url.openConnection() as HttpURLConnection\r\n \r\n             conn.requestMethod = \"POST\"\r\n"
+                }
+            ],
+            "date": 1779818970816,
+            "name": "Commit-0",
+            "content": "package com.gpscontrolec.gps_sms_gateway\r\n\r\nimport android.content.BroadcastReceiver\r\nimport android.content.Context\r\nimport android.content.Intent\r\nimport android.provider.Telephony\r\nimport android.util.Log\r\nimport kotlinx.coroutines.CoroutineScope\r\nimport kotlinx.coroutines.Dispatchers\r\nimport kotlinx.coroutines.launch\r\nimport java.io.OutputStreamWriter\r\nimport java.net.HttpURLConnection\r\nimport java.net.URL\r\n\r\nclass SmsReceiver : BroadcastReceiver() {\r\n\r\n    override fun onReceive(context: Context, intent: Intent) {\r\n        if (\r\n            intent.action != Telephony.Sms.Intents.SMS_RECEIVED_ACTION &&\r\n            intent.action != Telephony.Sms.Intents.SMS_DELIVER_ACTION\r\n        ) {\r\n            return\r\n        }\r\n\r\n        val messages = Telephony.Sms.Intents.getMessagesFromIntent(intent)\r\n        if (messages.isNullOrEmpty()) return\r\n\r\n        val from = messages.firstOrNull()?.originatingAddress ?: \"\"\r\n        val body = messages.joinToString(separator = \"\") { it.messageBody ?: \"\" }\r\n\r\n        Log.i(\"GpsGatewaySms\", \"SMS recibido de $from: $body\")\r\n\r\n        CoroutineScope(Dispatchers.IO).launch {\r\n            sendToBackend(from, body)\r\n        }\r\n    }\r\n\r\n    private fun sendToBackend(from: String, body: String) {\r\n        try {\r\n            val apiBase = \"https://gps-backend-ec.onrender.com\"\r\n            val apiKey = \"TU_API_KEY_AQUI\"\r\n\r\n            val url = URL(\"$apiBase/gateway/incoming\")\r\n            val conn = url.openConnection() as HttpURLConnection\r\n\r\n            conn.requestMethod = \"POST\"\r\n            conn.connectTimeout = 10000\r\n            conn.readTimeout = 10000\r\n            conn.doOutput = true\r\n            conn.setRequestProperty(\"Content-Type\", \"application/json\")\r\n            conn.setRequestProperty(\"x-api-key\", apiKey)\r\n\r\n            val safeFrom = from\r\n                .replace(\"\\\\\", \"\\\\\\\\\")\r\n                .replace(\"\\\"\", \"\\\\\\\"\")\r\n                .replace(\"\\n\", \"\\\\n\")\r\n\r\n            val safeBody = body\r\n                .replace(\"\\\\\", \"\\\\\\\\\")\r\n                .replace(\"\\\"\", \"\\\\\\\"\")\r\n                .replace(\"\\n\", \"\\\\n\")\r\n\r\n            val payload = \"\"\"\r\n                {\r\n                  \"from\": \"$safeFrom\",\r\n                  \"body\": \"$safeBody\"\r\n                }\r\n            \"\"\".trimIndent()\r\n\r\n            OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use {\r\n                it.write(payload)\r\n                it.flush()\r\n            }\r\n\r\n            val code = conn.responseCode\r\n            Log.i(\"GpsGatewaySms\", \"Backend response: $code\")\r\n\r\n            conn.disconnect()\r\n        } catch (e: Exception) {\r\n            Log.e(\"GpsGatewaySms\", \"Error enviando SMS al backend\", e)\r\n        }\r\n    }\r\n}"
+        }
+    ]
+}

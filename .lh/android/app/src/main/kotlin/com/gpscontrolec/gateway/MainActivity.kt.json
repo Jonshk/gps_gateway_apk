@@ -1,0 +1,18 @@
+{
+    "sourceFile": "android/app/src/main/kotlin/com/gpscontrolec/gateway/MainActivity.kt",
+    "activeCommit": 0,
+    "commits": [
+        {
+            "activePatchIndex": 0,
+            "patches": [
+                {
+                    "date": 1779823324993,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n"
+                }
+            ],
+            "date": 1779823324993,
+            "name": "Commit-0",
+            "content": "package com.gpscontrolec.gps_sms_gateway\n\nimport android.database.Cursor\nimport android.net.Uri\nimport android.provider.Telephony\nimport io.flutter.embedding.android.FlutterActivity\nimport io.flutter.embedding.engine.FlutterEngine\nimport io.flutter.plugin.common.MethodChannel\n\nclass MainActivity : FlutterActivity() {\n\n    private val channelName = \"gps_gateway/sms_inbox\"\n\n    override fun configureFlutterEngine(flutterEngine: FlutterEngine) {\n        super.configureFlutterEngine(flutterEngine)\n\n        MethodChannel(\n            flutterEngine.dartExecutor.binaryMessenger,\n            channelName\n        ).setMethodCallHandler { call, result ->\n            when (call.method) {\n                \"readInbox\" -> {\n                    val limit = call.argument<Int>(\"limit\") ?: 30\n                    result.success(readInboxSms(limit))\n                }\n                else -> result.notImplemented()\n            }\n        }\n    }\n\n    private fun readInboxSms(limit: Int): List<Map<String, Any?>> {\n        val smsList = mutableListOf<Map<String, Any?>>()\n\n        val uri: Uri = Telephony.Sms.Inbox.CONTENT_URI\n\n        val projection = arrayOf(\n            Telephony.Sms._ID,\n            Telephony.Sms.ADDRESS,\n            Telephony.Sms.BODY,\n            Telephony.Sms.DATE\n        )\n\n        val cursor: Cursor? = contentResolver.query(\n            uri,\n            projection,\n            null,\n            null,\n            \"${Telephony.Sms.DATE} DESC\"\n        )\n\n        cursor?.use {\n            val idIndex = it.getColumnIndexOrThrow(Telephony.Sms._ID)\n            val addressIndex = it.getColumnIndexOrThrow(Telephony.Sms.ADDRESS)\n            val bodyIndex = it.getColumnIndexOrThrow(Telephony.Sms.BODY)\n            val dateIndex = it.getColumnIndexOrThrow(Telephony.Sms.DATE)\n\n            var count = 0\n\n            while (it.moveToNext() && count < limit) {\n                val id = it.getLong(idIndex).toString()\n                val from = it.getString(addressIndex) ?: \"\"\n                val body = it.getString(bodyIndex) ?: \"\"\n                val date = it.getLong(dateIndex).toString()\n\n                smsList.add(\n                    mapOf(\n                        \"id\" to id,\n                        \"from\" to from,\n                        \"body\" to body,\n                        \"date\" to date\n                    )\n                )\n\n                count++\n            }\n        }\n\n        return smsList\n    }\n}"
+        }
+    ]
+}

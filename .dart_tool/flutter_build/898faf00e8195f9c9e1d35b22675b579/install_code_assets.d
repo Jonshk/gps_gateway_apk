@@ -1,0 +1,1 @@
+ C:\\Users\\Temporal\\Desktop\\gps_gateway_apk\\flutter_gateway\\.dart_tool\\flutter_build\\898faf00e8195f9c9e1d35b22675b579\\native_assets.json: 
