@@ -3,7 +3,7 @@
     "activeCommit": 0,
     "commits": [
         {
-            "activePatchIndex": 1,
+            "activePatchIndex": 2,
             "patches": [
                 {
                     "date": 1779818970816,
@@ -12,6 +12,10 @@
                 {
                     "date": 1779819106410,
                     "content": "Index: \n===================================================================\n--- \n+++ \n@@ -37,10 +37,9 @@\n \r\n     private fun sendToBackend(from: String, body: String) {\r\n         try {\r\n             val apiBase = \"https://gps-backend-ec.onrender.com\"\r\n-            val apiKey = \"TU_API_KEY_AQUI\"\r\n-\r\n+            val apiKey = \"changeme123\"\r\n             val url = URL(\"$apiBase/gateway/incoming\")\r\n             val conn = url.openConnection() as HttpURLConnection\r\n \r\n             conn.requestMethod = \"POST\"\r\n"
+                },
+                {
+                    "date": 1779905859770,
+                    "content": "Index: \n===================================================================\n--- \n+++ \n@@ -58,14 +58,9 @@\n                 .replace(\"\\\\\", \"\\\\\\\\\")\r\n                 .replace(\"\\\"\", \"\\\\\\\"\")\r\n                 .replace(\"\\n\", \"\\\\n\")\r\n \r\n-            val payload = \"\"\"\r\n-                {\r\n-                  \"from\": \"$safeFrom\",\r\n-                  \"body\": \"$safeBody\"\r\n-                }\r\n-            \"\"\".trimIndent()\r\n+            val payload = \"\"\"{\"from_number\": \"$safeFrom\", \"body\": \"$safeBody\"}\"\"\"\r\n \r\n             OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use {\r\n                 it.write(payload)\r\n                 it.flush()\r\n"
                 }
             ],
             "date": 1779818970816,

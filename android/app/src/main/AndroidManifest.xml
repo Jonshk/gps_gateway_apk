@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+﻿<manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -63,6 +63,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
 
+            <service android:name="com.gpscontrolec.gps_sms_gateway.GatewayService" android:foregroundServiceType="dataSync" android:exported="false" />
     </application>
 
     <queries>

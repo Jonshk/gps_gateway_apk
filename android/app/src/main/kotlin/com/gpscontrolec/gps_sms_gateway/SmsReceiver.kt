@@ -59,12 +59,7 @@ class SmsReceiver : BroadcastReceiver() {
                 .replace("\"", "\\\"")
                 .replace("\n", "\\n")
 
-            val payload = """
-                {
-                  "from": "$safeFrom",
-                  "body": "$safeBody"
-                }
-            """.trimIndent()
+            val payload = """{"from_number": "$safeFrom", "body": "$safeBody"}"""
 
             OutputStreamWriter(conn.outputStream, Charsets.UTF_8).use {
                 it.write(payload)

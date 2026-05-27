@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -32,7 +32,7 @@ void main() async {
     systemNavigationBarColor: Color(0xFF0A1628),
   ));
 
-  await initBackgroundService();
+  await startGatewayService();
   runApp(const GpsGatewayApp());
 }
 
@@ -98,7 +98,7 @@ class _GatewayScreenState extends State<GatewayScreen> {
       if (event == null) return;
       setState(() => _log.insert(0, {
             'type': 'sent',
-            'text': '📤 Enviado a ${event['to']}: ${event['body']}',
+            'text': 'ðŸ“¤ Enviado a ${event['to']}: ${event['body']}',
             'time': _fmt(event['time'] as String? ?? ''),
           }));
     });
@@ -106,7 +106,7 @@ class _GatewayScreenState extends State<GatewayScreen> {
       if (event == null) return;
       setState(() => _log.insert(0, {
             'type': 'received',
-            'text': '📥 De ${event['from']}: ${event['body']}',
+            'text': 'ðŸ“¥ De ${event['from']}: ${event['body']}',
             'time': _fmt(event['time'] as String? ?? ''),
           }));
     });
@@ -124,7 +124,7 @@ class _GatewayScreenState extends State<GatewayScreen> {
     if (_running) {
       _service.invoke('stopService');
       setState(() => _running = false);
-      _addLog('system', '⏹ Servicio detenido');
+      _addLog('system', 'â¹ Servicio detenido');
     } else {
       if (!_permsOk) {
         await _requestPerms();
@@ -132,7 +132,7 @@ class _GatewayScreenState extends State<GatewayScreen> {
       }
       await _service.startService();
       setState(() => _running = true);
-      _addLog('system', '▶ Servicio iniciado');
+      _addLog('system', 'â–¶ Servicio iniciado');
     }
   }
 
@@ -230,7 +230,7 @@ class _GatewayScreenState extends State<GatewayScreen> {
                 const SizedBox(height: 8),
                 _InfoRow(
                   label: 'Permisos SMS',
-                  value: _permsOk ? '✓ OK' : '✗ Falta',
+                  value: _permsOk ? 'âœ“ OK' : 'âœ— Falta',
                   valueColor: _permsOk
                       ? const Color(0xFF00D4A0)
                       : const Color(0xFFF87171),
@@ -308,7 +308,7 @@ class _GatewayScreenState extends State<GatewayScreen> {
                   Expanded(
                     child: _log.isEmpty
                         ? Center(
-                            child: Text('Sin actividad aún...',
+                            child: Text('Sin actividad aÃºn...',
                                 style: TextStyle(
                                     color: Colors.white.withOpacity(0.2),
                                     fontSize: 13)))
@@ -350,7 +350,7 @@ class _GatewayScreenState extends State<GatewayScreen> {
             ),
             const SizedBox(height: 12),
             Text(
-                'Mantén la app abierta o en segundo plano.\nNo optimices batería para esta app.',
+                'MantÃ©n la app abierta o en segundo plano.\nNo optimices baterÃ­a para esta app.',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white.withOpacity(0.2),
