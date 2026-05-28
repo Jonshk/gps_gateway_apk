@@ -3,7 +3,6 @@
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.provider.Telephony
@@ -48,8 +47,13 @@ class GatewayService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
+
     override fun onBind(intent: Intent?): IBinder? = null
-    override fun onDestroy() { super.onDestroy(); scope.cancel() }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel()
+    }
 
     private fun startLoops() {
         val pollSecs = getPollSecs(this)
@@ -81,38 +85,15 @@ class GatewayService : Service() {
         val commands = fetchPendingCommands(apiBase, apiKey) ?: return
 
         for (i in 0 until commands.length()) {
-            val cmd      = commands.getJSONObject(i)
-            val id       = cmd.getString("id")
-            val to       = cmd.getString("to")
-            val body     = cmd.getString("body")
-            val command  = cmd.optString("command", "")
-            val needsCall = command == "monitor" || body.lowercase().startsWith("monitor")
+            val cmd  = commands.getJSONObject(i)
+            val id   = cmd.getString("id")
+            val to   = cmd.getString("to")
+            val body = cmd.getString("body")
 
-            Log.d(TAG, "sending SMS to $to: $body (needsCall=$needsCall)")
+            Log.d(TAG, "sending SMS to $to: $body")
             val sent = sendSms(to, body)
             Log.d(TAG, "SMS sent=$sent to $to")
-
-            if (sent && needsCall) {
-                Log.d(TAG, "waiting 3s before calling $to")
-                delay(3_000)
-                makeCall(to)
-            }
-
             confirmCommand(apiBase, apiKey, id, sent)
-        }
-    }
-
-    // ── Llamada directa al GPS ────────────────────────────────────────
-    private fun makeCall(to: String) {
-        try {
-            val intent = Intent(Intent.ACTION_CALL).apply {
-                data = Uri.parse("tel:$to")
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK
-            }
-            startActivity(intent)
-            Log.d(TAG, "calling $to")
-        } catch (e: Exception) {
-            Log.e(TAG, "makeCall error: ${e.message}")
         }
     }
 
